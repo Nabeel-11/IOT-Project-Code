@@ -1,0 +1,111 @@
+const int PingPin=7;
+const int buzzPin=4;
+
+
+
+const int ledPin=2;
+const int ldrPin=A1;
+
+
+
+#define PIN_LED_1  9
+#define PIN_LED_2  8
+#define PIN_LED_3  6
+#define PIN_LED_4  5
+#define PIN_LED_5  3
+#define PIN_GAS    A3
+
+
+const int delayBetweenReads = 5000;
+const int sensorPin = A5;
+
+void setup()
+{
+  
+  Serial.begin(9600);
+  pinMode(buzzPin,OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  pinMode(ldrPin, INPUT);
+  pinMode(PIN_LED_1, OUTPUT);
+  pinMode(PIN_LED_2, OUTPUT);
+  pinMode(PIN_LED_3, OUTPUT);
+  pinMode(PIN_LED_4, OUTPUT);
+  pinMode(PIN_LED_5, OUTPUT);
+  pinMode(10 , INPUT);
+  pinMode (11 , OUTPUT);
+}
+
+void loop()
+{
+  
+  
+  long duration,cm;
+  pinMode(PingPin,OUTPUT);
+  digitalWrite(PingPin,LOW);
+  delayMicroseconds(2);
+  digitalWrite(PingPin,HIGH);
+  delayMicroseconds(5);
+  digitalWrite(PingPin,LOW);
+  
+  
+  pinMode(PingPin,INPUT);
+  duration = pulseIn(PingPin,HIGH);
+   
+  cm=microsecondsToCentimeters(duration);
+  Serial.print("Distance: ");
+  Serial.print(cm);
+  Serial.print("cm");
+  Serial.println();
+  
+  if(cm<100)
+  {
+    digitalWrite(buzzPin,HIGH);
+  }
+  else
+  {
+    digitalWrite(buzzPin,LOW);
+  }
+  
+  int ldrStatus = analogRead(ldrPin);
+  
+  Serial.print(ldrStatus);
+  
+  
+  
+  
+  if(ldrStatus <=300){
+    
+    digitalWrite(ledPin, HIGH);
+    
+    
+    
+  }
+  else{
+    
+    digitalWrite(ledPin, LOW);
+    
+  }
+  
+  
+  int value = map(analogRead(PIN_GAS), 300,750, 0, 100);
+  digitalWrite(PIN_LED_1, HIGH);
+  digitalWrite(PIN_LED_2, value >=20 ? HIGH : LOW);
+  digitalWrite(PIN_LED_3, value >=40 ? HIGH : LOW);
+  digitalWrite(PIN_LED_4, value >=60 ? HIGH : LOW);
+  digitalWrite(PIN_LED_5, value >=80 ? HIGH : LOW);
+    
+if(digitalRead(10) == HIGH)
+{
+  digitalWrite(11, HIGH);
+  delay(100);
+  
+  digitalWrite(11, LOW);
+  delay(100);
+}
+  delay(100);
+}
+long microsecondsToCentimeters(long microseconds)
+{
+  return microseconds/29/2;
+}
+ 
